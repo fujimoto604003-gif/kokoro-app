@@ -186,6 +186,12 @@ def set_png_as_page_bg(png_file):
 def main():
     # Initialize DB
     db_manager.init_db()
+
+    # --- Password Protection ---
+    password = st.sidebar.text_input("パスワードを入力してください", type="password")
+    if password != "VARY":
+        st.warning("正しいパスワードを入力してください。")
+        st.stop()
     
     # Apply Background
     set_png_as_page_bg('background.png')
