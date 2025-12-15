@@ -187,17 +187,29 @@ def main():
     # Initialize DB
     db_manager.init_db()
 
-    # --- Password Protection ---
-    password = st.sidebar.text_input("パスワードを入力してください", type="password")
-    if password != "VARY":
-        st.warning("正しいパスワードを入力してください。")
+    # --- Password Protection (Session State) ---
+    if 'authenticated' not in st.session_state:
+        st.session_state.authenticated = False
+
+    def check_password():
+        if st.session_state.password_input == "VARY":
+            st.session_state.authenticated = True
+            st.session_state.password_input = "" # Clear password
+        else:
+            st.warning("正しいパスワードを入力してください。")
+
+    if not st.session_state.authenticated:
+        st.markdown("<br><br>", unsafe_allow_html=True)
+        st.markdown('<div class="main-header">Mom’s ココロ Diary</div>', unsafe_allow_html=True)
+        st.info("🔒 このアプリはパスワードで保護されています。")
+        st.text_input("パスワードを入力", type="password", key="password_input", on_change=check_password)
         st.stop()
     
-    # Apply Background
+    # Apply Background (Only after login)
     set_png_as_page_bg('background.png')
 
     st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown('<div class="main-header">Mom’ｓココロ Diary</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header">Mom’s ココロ Diary</div>', unsafe_allow_html=True)
 
     # --- Sidebar: Date Selection ---
     with st.sidebar:
